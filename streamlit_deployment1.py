@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import pickle
 import requests
-
 # --- CONFIGURATION: REPLACE THESE URLs WITH YOURS ---
 MODEL_URL = "https://raw.githubusercontent.com/Kumaravijay/used-car-price-predictor/main/LinearRegressionModel.pkl"
 CSV_URL = "https://raw.githubusercontent.com/Kumaravijay/used-car-price-predictor/main/Cleaned_Car_data.csv"
