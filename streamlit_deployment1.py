@@ -3,24 +3,39 @@ import pandas as pd
 import numpy as np
 import pickle
 import requests
+import os
+
 # --- CONFIGURATION: REPLACE THESE URLs WITH YOURS ---
 MODEL_URL = "https://raw.githubusercontent.com/Kumaravijay/used-car-price-predictor/main/LinearRegressionModel.pkl"
 CSV_URL = "https://raw.githubusercontent.com/Kumaravijay/used-car-price-predictor/main/Cleaned_Car_data.csv"
 
-
 @st.cache_resource
 def load_model():
+    # Download the model file
     response = requests.get(MODEL_URL)
     with open("LinearRegressionModel.pkl", "wb") as f:
         f.write(response.content)
-    with open("LinearRegressionModel.pkl", "rb") as f:
-        model = pickle.load(f)
-    return model
+    # Basic check: ensure file is not HTML or empty
+    if os.path.getsize("LinearRegressionModel.pkl") < 1000:
+        st.error("Model file download failed or is incomplete. Check MODEL_URL.")
+        st.stop()
+    # Load the pickle model
+    try:
+        with open("LinearRegressionModel.pkl", "rb") as f:
+            model = pickle.load(f)
+        return model
+    except Exception as e:
+        st.error(f"Failed to load model: {e}")
+        st.stop()
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv(CSV_URL)
-    return df
+    try:
+        df = pd.read_csv(CSV_URL)
+        return df
+    except Exception as e:
+        st.error(f"Failed to load CSV: {e}")
+        st.stop()
 
 # --- LOAD MODEL AND DATA ---
 model = load_model()
